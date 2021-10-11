@@ -1,6 +1,8 @@
 import * as splToken from '@solana/spl-token';
 import * as web3 from '@solana/web3.js';
 
+import { createNFT } from './utils/token';
+
 const main = async () => {
   // Connect to cluster
   const connection = new web3.Connection(
@@ -20,33 +22,27 @@ const main = async () => {
   // Generate a new wallet to receive newly minted token
   const toWallet = web3.Keypair.generate();
 
-  // Create new token mint
-  const mint = await splToken.Token.createMint(
+  // Create new NFT mint
+  const mint = await createNFT({
     connection,
-    fromWallet,
-    fromWallet.publicKey,
-    null,
-    9,
-    splToken.TOKEN_PROGRAM_ID,
-  );
+    payer: fromWallet,
+    mintAuthority: fromWallet.publicKey,
+    freezeAuthority: null,
+    programId: splToken.TOKEN_PROGRAM_ID,
+  });
 
   // Get the token account of the fromWallet Solana address, if it does not exist, create it
   const fromTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
     fromWallet.publicKey,
   );
 
-  //get the token account of the toWallet Solana address, if it does not exist, create it
+  // Get the token account of the toWallet Solana address, if it does not exist, create it
   const toTokenAccount = await mint.getOrCreateAssociatedAccountInfo(
     toWallet.publicKey,
   );
 
   // Minting 1 new token to the "fromTokenAccount" account we just returned/created
-  await mint.mintTo(
-    fromTokenAccount.address,
-    fromWallet.publicKey,
-    [],
-    1000000000,
-  );
+  await mint.mintTo(fromTokenAccount.address, fromWallet.publicKey, [], 1);
 
   // Add token transfer instructions to transaction
   const transaction = new web3.Transaction().add(
