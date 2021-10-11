@@ -44,6 +44,15 @@ const main = async () => {
   // Minting 1 new token to the "fromTokenAccount" account we just returned/created
   await mint.mintTo(fromTokenAccount.address, fromWallet.publicKey, [], 1);
 
+  // Disable future minting to fix total suppy
+  await mint.setAuthority(
+    mint.publicKey,
+    null,
+    'MintTokens',
+    fromWallet.publicKey,
+    [],
+  );
+
   // Add token transfer instructions to transaction
   const transaction = new web3.Transaction().add(
     splToken.Token.createTransferInstruction(
