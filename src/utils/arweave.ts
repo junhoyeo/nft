@@ -1,10 +1,8 @@
 import Arweave from 'arweave';
-import { ApiConfig } from 'arweave/node/lib/api';
 import Transaction from 'arweave/node/lib/transaction';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import cliProgress from 'cli-progress';
 import colors from 'colors';
-import TestWeave from 'testweave-sdk';
 
 type UploadDataProps = {
   connection: Arweave;
@@ -30,7 +28,7 @@ export const uploadData = async ({
       format:
         'Uploading |' +
         colors.cyan('{bar}') +
-        '| {percentage}% || {value}/{total} Chunks || Speed: {speed}',
+        '| {percentage}% || {value}/{total} Chunks',
       barCompleteChar: '\u2588',
       barIncompleteChar: '\u2591',
       hideCursor: true,
@@ -57,9 +55,6 @@ export const getTransactionUri = ({
   connection,
   transaction,
 }: GetTransactionUri) => {
-  const {
-    api: { protocol },
-  } = connection.getConfig();
-  const uri = connection.api.request().getUri();
-  return `${protocol}://${uri}/${transaction.id}`;
+  const baseURL = connection.api.request().defaults.baseURL;
+  return `${baseURL}/${transaction.id}`;
 };
