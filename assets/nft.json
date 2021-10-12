@@ -1,0 +1,43 @@
+{
+  "name": "junhoyeo #01",
+  "symbol": "",
+  "description": "Junho's first NFT - a portrait of himself. \"I'm immortal now!\"",
+  "seller_fee_basis_points": 500,
+  "external_url": "https://junho.io",
+  "attributes": [
+    {
+      "name": "name",
+      "value": "Junho Yeo"
+    },
+    {
+      "name": "birth",
+      "display_type": "Date",
+      "value": 1057244400
+    },
+    {
+      "name": "image",
+      "value": "https://junho.io/images/junhoyeo.png"
+    }
+  ],
+  "collection": {
+    "name": "Junho People #0",
+    "family": "Junho People"
+  },
+  "image": "TO_BE_REPLACED",
+  "properties": {
+    "files": [
+      {
+        "uri": "TO_BE_REPLACED",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "maxSupply": 1,
+    "creators": [
+      {
+        "address": "HJLQd7CxQK5epNLE3R4u8b2MdGzmcvXjpntGWfht4FZH",
+        "share": 100
+      }
+    ]
+  }
+}
