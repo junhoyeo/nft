@@ -21,6 +21,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@junhoyeo/nft@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@junhoyeo/nft@workspace:."
+  dependencies:
+    "@solana/spl-token": ^0.1.8
+    "@solana/web3.js": ^1.29.2
+    "@types/cli-progress": ^3.9.2
+    "@types/node": ^16.10.3
+    arweave: ^1.10.18
+    cli-progress: ^3.9.1
+    colors: ^1.4.0
+    testweave-sdk: ^0.2.2
+    typescript: ^4.4.3
+  languageName: unknown
+  linkType: soft
+
 "@npmcli/fs@npm:^1.0.0":
   version: 1.0.0
   resolution: "@npmcli/fs@npm:1.0.0"
@@ -115,6 +131,15 @@ __metadata:
   version: 2.0.1
   resolution: "@types/cli-color@npm:2.0.1"
   checksum: e2caa8693c02c0b81b1239768cad50dd0a27c75fd8db439057dea999d8adb506101cdc501b35c6603e3ca04eff9db8d8315c7429f002564c47d474bdef83e6c7
+  languageName: node
+  linkType: hard
+
+"@types/cli-progress@npm:^3.9.2":
+  version: 3.9.2
+  resolution: "@types/cli-progress@npm:3.9.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 371ecb29c45dce7127b4a8626521d908ce7dfaea6a537fcd491b12aea3a8ff58452eb1b33e0d2e0724c81b56df3930195e521e12fe979518deb5329a7a884a02
   languageName: node
   linkType: hard
 
@@ -615,6 +640,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cli-progress@npm:^3.9.1":
+  version: 3.9.1
+  resolution: "cli-progress@npm:3.9.1"
+  dependencies:
+    colors: ^1.1.2
+    string-width: ^4.2.0
+  checksum: 1548550b0cf72f34fef9e99adddf70a06748a5c6231c744f3e7b41146b6c7a297136c61e5df4b67ca436a8f5d8308f148d373b2500c4bfe9fb1d9ac5ab78bb20
+  languageName: node
+  linkType: hard
+
 "cli-spinners@npm:^2.5.0":
   version: 2.6.1
   resolution: "cli-spinners@npm:2.6.1"
@@ -679,6 +714,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"colors@npm:^1.1.2, colors@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "colors@npm:1.4.0"
+  checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.20.3":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -715,19 +757,6 @@ __metadata:
   checksum: 2107e5e633aa327bdacab036b1907c7ddd28651ede0c1d4fd14db04510944d56849a8255e2f5b8f9a1da0e061b6cee943f6819fe29ed9a130195e7fadd82a4ff
   languageName: node
   linkType: hard
-
-"crypto-burger@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "crypto-burger@workspace:."
-  dependencies:
-    "@solana/spl-token": ^0.1.8
-    "@solana/web3.js": ^1.29.2
-    "@types/node": ^16.10.3
-    arweave: ^1.10.18
-    testweave-sdk: ^0.2.2
-    typescript: ^4.4.3
-  languageName: unknown
-  linkType: soft
 
 "crypto-hash@npm:^1.2.2":
   version: 1.3.0
