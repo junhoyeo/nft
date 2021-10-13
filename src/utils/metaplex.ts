@@ -444,29 +444,40 @@ export async function mint(
   return transactionId;
 }
 
+type GetAirdropProps = {
+  connection: anchor.web3.Connection;
+  wallet: web3.Keypair;
+};
+const getAirdrop = async ({ connection, wallet }: GetAirdropProps) => {
+  const fromAirdropSignature = await connection.requestAirdrop(
+    wallet.publicKey,
+    web3.LAMPORTS_PER_SOL,
+  );
+  await connection.confirmTransaction(fromAirdropSignature);
+};
+
 type CreateCandyMachineProps = {
   manifest: Record<string, any>;
   manifestUri: string;
-  environment?: web3.Cluster;
+  environment: web3.Cluster;
+  fromWallet: web3.Keypair;
 };
 export const createCandyMachine = async ({
   manifest,
   manifestUri,
   environment,
+  fromWallet,
 }: CreateCandyMachineProps) => {
   // Upload
-  const fromWallet = web3.Keypair.generate();
   const program = await getCandyMachineProgram(fromWallet, environment);
   if (!program) {
     return;
   }
   const connection = program.provider.connection;
 
-  const fromAirdropSignature = await connection.requestAirdrop(
-    fromWallet.publicKey,
-    web3.LAMPORTS_PER_SOL,
-  );
-  await connection.confirmTransaction(fromAirdropSignature);
+  if (environment && ['testnet', 'devnet'].includes(environment)) {
+    await getAirdrop({ connection, wallet: fromWallet });
+  }
 
   const {
     uuid,
