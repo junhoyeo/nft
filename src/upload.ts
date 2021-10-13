@@ -6,27 +6,44 @@ import TestWeave from 'testweave-sdk';
 
 import { getTransactionUri, uploadData } from './utils/arweave';
 
-type UploadMetadataProps =
-  | {
-      testnet: true;
-      mineAfterDone?: boolean;
-    }
-  | { testnet: false };
-
-export const uploadMetadata = async (props: UploadMetadataProps) => {
-  const arweave = Arweave.init({
+const API_CONFIG = {
+  MAINNET: {
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+    timeout: 20000,
+    logging: false,
+  },
+  TESTNET: {
     host: 'localhost',
     port: 1984,
     protocol: 'http',
     timeout: 20000,
     logging: false,
-  });
+  },
+};
+type UploadMetadataProps =
+  | {
+      testnet: true;
+      mineAfterDone?: boolean;
+    }
+  | {
+      testnet: false;
+      key: JWKInterface;
+    };
+
+export const uploadMetadata = async (props: UploadMetadataProps) => {
+  const arweave = Arweave.init(
+    props.testnet ? API_CONFIG.TESTNET : API_CONFIG.MAINNET,
+  );
 
   let testWeave: TestWeave | undefined = undefined;
   let jwk: JWKInterface | undefined = undefined;
   if (props.testnet) {
     testWeave = await TestWeave.init(arweave);
     jwk = testWeave.rootJWK;
+  } else {
+    jwk = props.key;
   }
 
   if (!jwk) {
@@ -73,4 +90,12 @@ export const uploadMetadata = async (props: UploadMetadataProps) => {
   }
 };
 
-uploadMetadata({ testnet: true });
+/*
+const jtk = JSON.parse(
+  fs
+    .readFileSync(path.resolve(__dirname, '../assets/arweave-key.json'))
+    .toString(),
+);
+uploadMetadata({ testnet: false, key: jtk });
+*/
+uploadMetadata({ testnet: true, mineAfterDone: true });
