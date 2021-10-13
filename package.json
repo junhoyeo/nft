@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node build/",
+    "upload": "node build/upload",
     "build": "tsc"
   },
   "dependencies": {
