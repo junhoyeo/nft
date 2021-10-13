@@ -1,12 +1,19 @@
 import Arweave from 'arweave';
+import { JWKInterface } from 'arweave/node/lib/wallet';
 import fs from 'fs';
 import * as path from 'path';
 import TestWeave from 'testweave-sdk';
 
 import { getTransactionUri, uploadData } from './utils/arweave';
-import { createCandyMachine } from './utils/metaplex';
 
-const uploadMetadata = async () => {
+type UploadMetadataProps =
+  | {
+      testnet: true;
+      mineAfterDone?: boolean;
+    }
+  | { testnet: false };
+
+export const uploadMetadata = async (props: UploadMetadataProps) => {
   const arweave = Arweave.init({
     host: 'localhost',
     port: 1984,
@@ -14,8 +21,17 @@ const uploadMetadata = async () => {
     timeout: 20000,
     logging: false,
   });
-  const testWeave = await TestWeave.init(arweave);
-  const jwk = testWeave.rootJWK;
+
+  let testWeave: TestWeave | undefined = undefined;
+  let jwk: JWKInterface | undefined = undefined;
+  if (props.testnet) {
+    testWeave = await TestWeave.init(arweave);
+    jwk = testWeave.rootJWK;
+  }
+
+  if (!jwk) {
+    throw new Error('No jwk found');
+  }
 
   const imageTransaction = await uploadData({
     connection: arweave,
@@ -52,13 +68,9 @@ const uploadMetadata = async () => {
   });
   console.log({ manifestUri });
 
-  await createCandyMachine({
-    manifest,
-    manifestUri,
-    environment: 'devnet',
-  });
-
-  await testWeave.mine();
+  if (props.testnet && props.mineAfterDone && testWeave) {
+    await testWeave.mine();
+  }
 };
 
-uploadMetadata();
+uploadMetadata({ testnet: true });
