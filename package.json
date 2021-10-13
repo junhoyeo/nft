@@ -14,7 +14,6 @@
     "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.29.2",
     "arweave": "^1.10.18",
-    "bn.js": "^5.2.0",
     "cli-progress": "^3.9.1",
     "colors": "^1.4.0",
     "testweave-sdk": "^0.2.2"

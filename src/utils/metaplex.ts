@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import * as anchor from '@project-serum/anchor';
 import * as splToken from '@solana/spl-token';
 import * as web3 from '@solana/web3.js';
@@ -50,11 +48,11 @@ export const CONFIG_ARRAY_START =
 export const CONFIG_LINE_SIZE = 4 + 32 + 4 + 200;
 
 type ConfigData = {
-  maxNumberOfLines: BN;
+  maxNumberOfLines: anchor.BN;
   symbol: string;
   sellerFeeBasisPoints: number;
   isMutable: boolean;
-  maxSupply: BN;
+  maxSupply: anchor.BN;
   retainAuthority: boolean;
   creators: {
     address: web3.PublicKey;
@@ -252,7 +250,6 @@ async function awaitTransactionSignatureConfirmation(
       console.error('WS error in setup', txid, e);
     }
     while (!done && queryStatus) {
-      // eslint-disable-next-line no-loop-func
       (async () => {
         try {
           const signatureStatuses = await connection.getSignatureStatuses([
@@ -476,11 +473,11 @@ export const createCandyMachine = async ({
     config,
     transactionId: initializeConfigTransactionId,
   } = await createConfig(program, fromWallet, {
-    maxNumberOfLines: new BN(1),
+    maxNumberOfLines: new anchor.BN(1),
     symbol: manifest.symbol,
     sellerFeeBasisPoints: manifest.seller_fee_basis_points,
     isMutable: true,
-    maxSupply: new BN(0),
+    maxSupply: new anchor.BN(0),
     retainAuthority: true,
     creators: manifest.properties.creators.map((creator: any) => {
       return {
