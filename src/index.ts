@@ -4,6 +4,7 @@ import * as path from 'path';
 import TestWeave from 'testweave-sdk';
 
 import { getTransactionUri, uploadData } from './utils/arweave';
+import { createCandyMachine } from './utils/metaplex';
 
 const uploadMetadata = async () => {
   const arweave = Arweave.init({
@@ -51,6 +52,7 @@ const uploadMetadata = async () => {
   });
   console.log({ manifestUri });
 
+  await createCandyMachine({ environment: 'devnet' });
   await testWeave.mine();
 };
 
