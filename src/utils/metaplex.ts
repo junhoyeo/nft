@@ -4,22 +4,11 @@ import * as anchor from '@project-serum/anchor';
 import * as splToken from '@solana/spl-token';
 import * as web3 from '@solana/web3.js';
 
+import { PROGRAMS } from '../metaplex/constants';
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-export const CANDY_MACHINE_PROGRAM_ID = new web3.PublicKey(
-  'cndyAnrLdpjq1Ssp1z8xxDsB8dxe7u4HL5Nxi2K5WXZ',
-);
-export const TOKEN_PROGRAM_ID = new web3.PublicKey(
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-);
-export const TOKEN_METADATA_PROGRAM_ID = new web3.PublicKey(
-  'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-);
-export const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new web3.PublicKey(
-  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-);
 
 export async function getCandyMachineProgram(
   walletKeyPair: web3.Keypair,
@@ -33,12 +22,12 @@ export async function getCandyMachineProgram(
     preflightCommitment: 'recent',
   });
 
-  const idl = await anchor.Program.fetchIdl(CANDY_MACHINE_PROGRAM_ID, provider);
+  const idl = await anchor.Program.fetchIdl(PROGRAMS.CANDY_MACHINE, provider);
   if (!idl) {
     return;
   }
 
-  const program = new anchor.Program(idl, CANDY_MACHINE_PROGRAM_ID, provider);
+  const program = new anchor.Program(idl, PROGRAMS.CANDY_MACHINE, provider);
   const programId = program.programId.toBase58();
   console.log({ programIdFromAnchor: programId });
   return program;
@@ -95,7 +84,7 @@ export async function createConfigAccount(
       await anchorProgram.provider.connection.getMinimumBalanceForRentExemption(
         size,
       ),
-    programId: CANDY_MACHINE_PROGRAM_ID,
+    programId: PROGRAMS.CANDY_MACHINE,
   });
 }
 
@@ -148,8 +137,8 @@ export const getTokenWallet = async function (
 ) {
   return (
     await web3.PublicKey.findProgramAddress(
-      [wallet.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-      SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+      [wallet.toBuffer(), PROGRAMS.TOKEN.toBuffer(), mint.toBuffer()],
+      PROGRAMS.SPL_ASSOCIATED_TOKEN_ACCOUNT,
     )
   )[0];
 };
@@ -170,7 +159,7 @@ const createAssociatedTokenAccountInstruction = (
       isSigner: false,
       isWritable: false,
     },
-    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: PROGRAMS.TOKEN, isSigner: false, isWritable: false },
     {
       pubkey: anchor.web3.SYSVAR_RENT_PUBKEY,
       isSigner: false,
@@ -179,7 +168,7 @@ const createAssociatedTokenAccountInstruction = (
   ];
   return new anchor.web3.TransactionInstruction({
     keys,
-    programId: SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+    programId: PROGRAMS.SPL_ASSOCIATED_TOKEN_ACCOUNT,
     data: Buffer.from([]),
   });
 };
@@ -191,10 +180,10 @@ export const getMetadata = async (
     await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from('metadata'),
-        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        PROGRAMS.TOKEN_METADATA.toBuffer(),
         mint.toBuffer(),
       ],
-      TOKEN_METADATA_PROGRAM_ID,
+      PROGRAMS.TOKEN_METADATA,
     )
   )[0];
 };
@@ -205,11 +194,11 @@ const getMasterEdition = async (
     await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from('metadata'),
-        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        PROGRAMS.TOKEN_METADATA.toBuffer(),
         mint.toBuffer(),
         Buffer.from('edition'),
       ],
-      TOKEN_METADATA_PROGRAM_ID,
+      PROGRAMS.TOKEN_METADATA,
     )
   )[0];
 };
@@ -331,10 +320,10 @@ export async function mint(
         await anchorProgram.provider.connection.getMinimumBalanceForRentExemption(
           splToken.MintLayout.span,
         ),
-      programId: TOKEN_PROGRAM_ID,
+      programId: PROGRAMS.TOKEN,
     }),
     splToken.Token.createInitMintInstruction(
-      TOKEN_PROGRAM_ID,
+      PROGRAMS.TOKEN,
       mint.publicKey,
       0,
       wallet.publicKey,
@@ -347,7 +336,7 @@ export async function mint(
       mint.publicKey,
     ),
     splToken.Token.createMintToInstruction(
-      TOKEN_PROGRAM_ID,
+      PROGRAMS.TOKEN,
       mint.publicKey,
       userTokenAccountAddress,
       wallet.publicKey,
@@ -378,7 +367,7 @@ export async function mint(
 
     instructions.push(
       splToken.Token.createApproveInstruction(
-        TOKEN_PROGRAM_ID,
+        PROGRAMS.TOKEN,
         tokenAccount,
         transferAuthority.publicKey,
         wallet.publicKey,
@@ -402,8 +391,8 @@ export async function mint(
         masterEdition,
         mintAuthority: wallet.publicKey,
         updateAuthority: wallet.publicKey,
-        tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
-        tokenProgram: TOKEN_PROGRAM_ID,
+        tokenMetadataProgram: PROGRAMS.TOKEN_METADATA,
+        tokenProgram: PROGRAMS.TOKEN,
         systemProgram: web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
@@ -415,7 +404,7 @@ export async function mint(
   if (tokenAccount) {
     instructions.push(
       splToken.Token.createRevokeInstruction(
-        TOKEN_PROGRAM_ID,
+        PROGRAMS.TOKEN,
         tokenAccount,
         wallet.publicKey,
         [],
@@ -527,7 +516,7 @@ export const createCandyMachine = async ({
   // Create Candy Machine
   const [candyMachine, bump] = await anchor.web3.PublicKey.findProgramAddress(
     [Buffer.from('candy_machine'), config.toBuffer(), Buffer.from(uuid)],
-    CANDY_MACHINE_PROGRAM_ID,
+    PROGRAMS.CANDY_MACHINE,
   );
 
   const goLiveDate = Date.now() / 1000;
